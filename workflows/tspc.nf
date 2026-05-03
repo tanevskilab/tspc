@@ -93,7 +93,7 @@ workflow TSPC {
     // Mcquant
     //
     if (params.do_backsub) {
-        MCQUANT(BACKSUB.out.backsub_tif, CELLPOSESAM.out.mask, markersheet_tuple)
+        MCQUANT(BACKSUB.out.backsub_tif, CELLPOSESAM.out.mask, BACKSUB.out.markerout)
     } else {
         MCQUANT(image_tuple, CELLPOSESAM.out.mask, markersheet_tuple)
     }

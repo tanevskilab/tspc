@@ -93,10 +93,29 @@ workflow TSPC {
     // Mcquant
     //
     if (params.do_backsub) {
-        MCQUANT(BACKSUB.out.backsub_tif, CELLPOSESAM.out.mask, BACKSUB.out.markerout)
+        ch_mcquant = BACKSUB.out.backsub_tif
+            .join(CELLPOSESAM.out.mask)
+            .join(BACKSUB.out.markerout)
+        MCQUANT(
+            ch_mcquant.map { meta, img, mask, marker -> tuple(meta, img) },
+            ch_mcquant.map { meta, img, mask, marker -> tuple(meta, mask) },
+            ch_mcquant.map { meta, img, mask, marker -> tuple(meta, marker) }
+        )
     } else {
-        MCQUANT(image_tuple, CELLPOSESAM.out.mask, markersheet_tuple)
+        ch_mcquant = image_tuple
+            .join(CELLPOSESAM.out.mask)
+            .join(markersheet_tuple)
+        MCQUANT(
+            ch_mcquant.map { meta, img, mask, marker -> tuple(meta, img) },
+            ch_mcquant.map { meta, img, mask, marker -> tuple(meta, mask) },
+            ch_mcquant.map { meta, img, mask, marker -> tuple(meta, marker) }
+        )
     }
+    // if (params.do_backsub) {
+    //     MCQUANT(BACKSUB.out.backsub_tif, CELLPOSESAM.out.mask, BACKSUB.out.markerout)
+    // } else {
+    //     MCQUANT(image_tuple, CELLPOSESAM.out.mask, markersheet_tuple)
+    // }
     
     // mc_quant_ch = MCQUANT(backsub_img[0], cellpose_ch, markers_nsclc_ch)
 
